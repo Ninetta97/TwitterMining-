@@ -1,0 +1,43 @@
+import tweepy, time, sys
+from tweepy import OAuthHandler #we need OAuth interface
+from tweepy import Stream
+from tweepy.streaming import StreamListener
+
+#connect to twitter account
+consumer_key = 'N6r9wfcKyp3tEGwaoZ6Gm2FA3'
+consumer_secret = '79gMQ0t3A0YsjEGfkVxrFl0bbaB2jiDB1Y8aeAeT7ZkSatHh2V'
+access_token = '1968995588-JSGncyq9unvXGYeA07KBypvVa6wdKJB3xEpNo62'
+access_secret = 'JqOrVRDq2zHerYKsIzYZIW6Y6kjDtl2abrXsSs0OIpqjD'
+
+auth = OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_secret)
+
+#once you connected to all your data, then start working on your api
+api = tweepy.API(auth)
+
+
+
+#streaming api PUSHES messages to a persistent session  
+#allows for more data to be donwloaded in real time
+
+#creating a class inheriting from StreamListener
+class MyListener(StreamListener):
+	#on_data method receives all messages and calls functions
+	#according to the message type
+	def on_data(self, data):
+		try:
+			with open('python.json', 'a') as f
+			   f.write(data)
+			   return True
+		except BaseException as e:
+			print("Error on_data: %s" % str(e))
+		return True
+
+	def on_error(self, status):
+		print(status)
+		return True
+
+#calling the Stream object establishes a streaming
+#session and routes messages to StreamListener
+twitter_stream = Stream(auth, MyListener())
+twitter_stream.filter(track=['Donald Trump'])
